@@ -5,9 +5,9 @@
     public class Task : IComparable<Task>
     {
         public string Description { get; set; }
-        public long Priority { get; set; }
+        public int Priority { get; set; }
 
-        public Task(string description, long priority)
+        public Task(string description, int priority)
         {
             this.Description = description;
             this.Priority = priority;

@@ -3,26 +3,43 @@
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Represent a data type where elements with higher priority are "served" before elements with lower priority.
+    /// Elements of same priority are served with random order.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PriorityQueue<T> where T : IComparable<T>
     {
         private List<T> dataHeap;
 
+        /// <summary>
+        /// Initializes a new instance of the Priority Queue that is empty.
+        /// </summary>
         public PriorityQueue()
         {
             this.dataHeap = new List<T>();
         }
 
+        /// <summary>
+        /// Adds an element to the queue and then heapifies so that the element with highest priority is at front.
+        /// </summary>
+        /// <param name="value">The element to enqueue.</param>
         public void Enqueue(T value)
         {
             this.dataHeap.Add(value);
             BubbleUp();
         }
 
+        /// <summary>
+        /// Removes the element at the front and returns it.
+        /// </summary>
+        /// <returns>The element that is removed from the queue front.</returns>
+        /// <exception cref="InvalidOperationException">The Queue is empty.</exception>
         public T Dequeue()
         {
             if (this.dataHeap.Count <= 0)
             {
-                throw new ArgumentException("Cannot Dequeue from empty queue!");
+                throw new InvalidOperationException("Cannot Dequeue from empty queue!");
             }
       
             T result = dataHeap[0];
@@ -34,6 +51,10 @@
             return result;
         }
 
+        /// <summary>
+        /// A method to maintain the heap order of the elements after enqueue. If the parent of the newly added 
+        /// element is with less priority - swap them.
+        /// </summary>
         private void BubbleUp()
         {
             int childIndex = dataHeap.Count - 1;
@@ -52,6 +73,9 @@
             }
         }
 
+        /// <summary>
+        /// A method to maintain the heap order of the elements after denqueue. We check priorities of both children and parent node.
+        /// </summary>
         private void ShiftDown()
         {
             int count = this.dataHeap.Count - 1;
@@ -80,27 +104,39 @@
             }
         }
 
+        /// <summary>Returns the element at the front of the Priority Queue without removing it.</summary>
+        /// <returns>The element at the front of the queue.</returns>
+        /// <exception cref="InvalidOperationException">The Queue is empty.</exception>
         public T Peek()
         {
             if (this.dataHeap.Count == 0)
             {
-                throw new ArgumentException("Queue is empty.");
+                throw new InvalidOperationException("Queue is empty.");
             }
 
             T frontItem = dataHeap[0];
             return frontItem;
         }
 
+        /// <summary>
+        /// Gets the number of elements currently contained in the <see cref="PriorityQueue"/>
+        /// </summary>
+        /// <returns>The number of elements contained in the <see cref="PriorityQueue"/></returns>
         public int Count()
         {
             return dataHeap.Count;
         }
 
+        /// <summary>Removes all elements from the queue.</summary>
         public void Clear()
         {
             this.dataHeap.Clear();
         }
 
+        /// <summary>Copies the queue elements to an existing array, starting at the specified index.</summary>
+        /// <exception cref="ArgumentNullException">Array is null. </exception>
+        /// <exception cref="IndexOutOfRangeException">Index is less than zero or bigger than array length. </exception>
+        /// <exception cref="ArgumentException">The number of elements int the source is greater than the available space.</exception>
         public void CopyToArray(T[] array, int index)
         {
             if (array == null)
@@ -122,28 +158,41 @@
             Array.Copy(data, 0, array, index, data.Length);
         }
 
+        /// <summary>
+        /// Checks the consistency of the heap.
+        /// </summary>
+        /// <returns>True if the heap property is ok.</returns>
         public bool IsConsistent()
         {
-            // is the heap property true for all data?
             if (dataHeap.Count == 0)
             {
                 return true;
             }
 
-            int lastIndex = dataHeap.Count - 1; // last index
-
-            for (int parentIndex = 0; parentIndex < dataHeap.Count; ++parentIndex) // each parent index
+            int lastIndex = dataHeap.Count - 1; 
+            for (int parentIndex = 0; parentIndex < dataHeap.Count; ++parentIndex) 
             {
-                int leftChildIndex = 2 * parentIndex + 1; // left child index
-                int rightChildIndex = 2 * parentIndex + 2; // right child index
+                int leftChildIndex = 2 * parentIndex + 1; 
+                int rightChildIndex = 2 * parentIndex + 2;
 
-                if (leftChildIndex <= lastIndex && dataHeap[parentIndex].CompareTo(dataHeap[leftChildIndex]) > 0) return false; // if lc exists and it's greater than parent then bad.
-                if (rightChildIndex <= lastIndex && dataHeap[parentIndex].CompareTo(dataHeap[rightChildIndex]) > 0) return false; // check the right child too.
+                if (leftChildIndex <= lastIndex && dataHeap[parentIndex].CompareTo(dataHeap[leftChildIndex]) > 0)
+                {
+                    return false;
+                }
+                if (rightChildIndex <= lastIndex && dataHeap[parentIndex].CompareTo(dataHeap[rightChildIndex]) > 0)
+                {
+                    return false;
+                }
             }
 
-            return true; // passed all checks
+            return true;
         }
 
+        /// <summary>
+        /// A method that swaps the elements at the given indices of the heap.
+        /// </summary>
+        /// <param name="first">The first element index.</param>
+        /// <param name="second">The second element index.</param>
         private void SwapAt(int first,int second)
         {
             T value = dataHeap[first];
